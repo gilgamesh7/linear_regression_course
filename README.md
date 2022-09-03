@@ -10,3 +10,7 @@
 - pip install pipenv
 - pipenv install <package-name>
 - To deploy : pipenv install --deploy
+
+## To run from docker-compose
+- Open in VSCode
+- Right click on docker-compose.yaml & choose "Compose Up"
