@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
 
 import logging
 
@@ -7,7 +8,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format="[{asctime}] - {funcName} - {message}", style='{')
 logger = logging.getLogger("LINEAR_REGRESSION")
 
-def simple_linear_regression():
+def simple_linear_regression()-> None:
     try:
         logger.info("Setting up regressors & response")
 
@@ -42,7 +43,7 @@ def simple_linear_regression():
         logger.error(f"{str(e)}")
 
 
-def multiple_linear_regression():
+def multiple_linear_regression()-> None:
     try:
         logger.info("Setting up regressors & response")
 
@@ -74,6 +75,42 @@ def multiple_linear_regression():
     except Exception as e:
         logger.error(f"{str(e)}")
 
+def polynomial_regression()-> None:
+    try:
+        logger.info("Setting up regressors & response")
+
+        # you need to transform the array of inputs to include nonlinear terms such as 𝑥².
+        # you need the input to be a two-dimensional array. That’s why .reshape() is used.
+        x = np.array([5, 15, 25, 35, 45, 55]).reshape((-1, 1))
+        y = np.array([15, 11, 2, 8, 25, 32])
+
+        # transformer refers to an instance of PolynomialFeatures that you can use to transform the input x.
+        transformer = PolynomialFeatures(degree=2, interaction_only=False, include_bias=False)
+
+        logger.info("Fit polynomial to transformer")
+        transformer.fit(x)
+
+        logger.info("input array as the argument and returns the modified array")
+        x_ = transformer.transform(x)
+
+        # modified input array contains two columns: one with the original inputs and the other with their squares
+        logger.info(f"_x : \n {x_}")
+
+        logger.info(f"Create & Fit model")
+        model = LinearRegression().fit(x_, y)
+
+        r_sq = model.score(x_, y)
+        logger.info(f"coefficient of determination: {r_sq}")
+        logger.info(f"intercept: {model.intercept_}")
+        logger.info(f"coefficients: {model.coef_}")
+
+        logger.info(f"Predict response")
+        y_pred = model.predict(x_)
+        print(f"predicted response:\n{y_pred}")
+
+    except Exception as e:
+        logger.error(f"{str(e)}")
+
 
 def main()-> None:
     try:
@@ -82,6 +119,9 @@ def main()-> None:
 
         logger.info("Multiple Linear Regression With scikit-learn")
         multiple_linear_regression()
+
+        logger.info("Polynomial Regression with scikit-learn")
+        polynomial_regression()
     except Exception as e:
         logger.error(f"{str(e)}")
 
