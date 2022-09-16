@@ -1,6 +1,9 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
+# For polynomial regression
 from sklearn.preprocessing import PolynomialFeatures
+# For advanced inear Regression With statsmodels
+import statsmodels.api as sm
 
 import logging
 
@@ -111,6 +114,42 @@ def polynomial_regression()-> None:
     except Exception as e:
         logger.error(f"{str(e)}")
 
+def advanced_regression_with_statsmodels()-> None:
+    try:
+        logger.info("Setting up regressors & response")
+        x = [
+            [0, 1], [5, 1], [15, 2], [25, 5], [35, 11], [45, 15], [55, 34], [60, 35]
+        ]
+        y = [4, 5, 20, 14, 32, 22, 38, 43]
+        x, y = np.array(x), np.array(y)
+
+        #  add the column of ones to the inputs if you want statsmodels to calculate the intercept 𝑏₀.
+        x = sm.add_constant(x)
+
+        logger.info(f"Regressors & reponse : \n {x = } \n {y = }")
+
+        logger.info(f"Create model & Fit")
+        # Notice that the first argument is the output, followed by the input
+        model = sm.OLS(y, x)
+        results = model.fit()
+
+        logger.info(f"Results \n : {results.summary()}")
+        logger.info(f"coefficient of determination: {results.rsquared}")
+        logger.info(f"adjusted coefficient of determination: {results.rsquared_adj}")
+        logger.info(f"regression coefficients: {results.params}")
+
+        logger.info(f"predicted response:\n{results.fittedvalues}")
+        logger.info(f"predicted response:\n{results.predict(x)}")
+
+        x_new = sm.add_constant(np.arange(10).reshape((-1, 2)))
+        logger.info(f"New regressor : \n {x_new}")
+        logger.info(f"New prediction : \n {results.predict(x_new)}")
+
+
+
+
+    except Exception as e:
+        logger.error(f"{str(e)}")
 
 def main()-> None:
     try:
@@ -122,6 +161,10 @@ def main()-> None:
 
         logger.info("Polynomial Regression with scikit-learn")
         polynomial_regression()
+
+        logger.info(f"Adnavced linear regression with statsmodels")
+        advanced_regression_with_statsmodels()
+
     except Exception as e:
         logger.error(f"{str(e)}")
 
